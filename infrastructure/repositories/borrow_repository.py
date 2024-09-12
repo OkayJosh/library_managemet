@@ -1,8 +1,8 @@
 """
 Borrow Repository
 """
-from core.domain.models import BorrowRecord
 from infrastructure.repositories.base_repository import BaseRepository
+from library.models import BorrowRecord
 
 
 class BorrowRepository(BaseRepository):
