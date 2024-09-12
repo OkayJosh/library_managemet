@@ -7,7 +7,7 @@ from celery import Celery
 from django.conf import settings
 
 # Set the default Django settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'llm.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'library_managemet.settings')
 
 
 app = Celery('library_managemet', broker=settings.CELERY_BROKER_URL)
