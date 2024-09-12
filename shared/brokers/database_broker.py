@@ -32,7 +32,7 @@ class DataBaseBroker:
         :param topic: Event topic.
         :param event: Event payload.
         """
-        app.send_task('application.tasks.process_event', args=[topic, event])
+        app.send_task('library.tasks.process_event', args=[topic, event])
         LOG.info(f"application.tasks.process_event with: {topic}, {event}")
 
     def list_available_books(self):

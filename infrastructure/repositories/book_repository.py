@@ -1,8 +1,8 @@
 """
 Book Repository
 """
-from core.domain.models import Book
 from infrastructure.repositories.base_repository import BaseRepository
+from library.models import Book
 
 
 class BookRepository(BaseRepository):

@@ -21,7 +21,7 @@ class BaseRepository:
             databases = databases.split(',')
         self.databases = databases
         self.model_class = model_class
-        self.orm = model_class.objects
+        self.orm = model_class
 
     def _get_queryset(self, database):
         """
@@ -29,7 +29,7 @@ class BaseRepository:
         :param database: Database identifier.
         :return: QuerySet for the specified database.
         """
-        return self.orm.using(database)
+        return self.orm.objects.using(database)
 
     def add(self, instance):
         """
@@ -39,7 +39,8 @@ class BaseRepository:
         """
         results = []
         for db in self.databases:
-            result = self._get_queryset(db).create(**instance.to_dict())
+            instance = self.model_class(**instance)
+            result = instance.save(using=db)
             results.append(result)
         return results
 
