@@ -87,7 +87,10 @@ DATABASES = {
         default=config('DATABASE_URL_2'),
     )
 }
+
+
 DATABASES['default']['ATOMIC_REQUESTS'] = True
+DATABASES['admin']['ATOMIC_REQUESTS'] = True
 
 
 
