@@ -1,11 +1,14 @@
 """
 Application tasks
 """
+import logging
+
 from infrastructure.repositories.book_repository import BookRepository
 from infrastructure.repositories.borrow_repository import BorrowRepository
 from infrastructure.repositories.user_repository import UserRepository
 from library_managemet.celery import app
 
+LOG = logging.getLogger(__name__)
 
 class EventProcessor:
     """
@@ -28,14 +31,16 @@ class EventProcessor:
         if topic not in self.repositories:
             raise ValueError(f"Unknown topic: {topic}")
 
-        actions, repository = self.repositories[topic]
+        callable_action, repository = self.repositories[topic]
         action = event.get("action")
 
-        if action not in actions:
+        LOG.info(f"Processing event {event}, actions {callable_action}, repository {repository}, topic {topic}")
+        called_action = callable_action()
+        if action not in called_action:
             raise ValueError(f"Unknown action: {action}")
 
         # Execute the corresponding action
-        actions[action](event, repository)
+        called_action[action](event, repository)
 
     def book_actions(self):
         return {
