@@ -1,8 +1,8 @@
 """
 User Repository
 """
-from core.domain.models import User
 from infrastructure.repositories.base_repository import BaseRepository
+from library.models import User
 
 
 class UserRepository(BaseRepository):
