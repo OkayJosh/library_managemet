@@ -58,9 +58,8 @@ class BookService:
         :param book:
         :return: Serialized new book.
         """
-        new_book = self.default_db.add_book(book)
-        serializer = BookSerializer(new_book)
-        return serializer.data
+        self.default_db.add_book(book)
+        return "book was successfully added."
 
     def remove_book(self, book_uuid: uuid):
         """
