@@ -4,7 +4,7 @@ Data classes for the Base Entities
 import uuid
 from dataclasses import dataclass
 from datetime import date
-from typing import Union
+from typing import Union, Optional
 
 
 @dataclass
@@ -12,8 +12,8 @@ class User:
     """
     Domain model for a library user.
     """
-    user_id: Union[int, None]
-    user_uuid: uuid
+    user_id: Optional[int]
+    user_uuid: Optional[uuid.UUID]
     email: str
     firstname: str
     lastname: str
@@ -30,8 +30,8 @@ class Book:
     """
     Domain model for a book in the library.
     """
-    book_id: Union[int, None]
-    book_uuid: uuid
+    book_id: Optional[int]
+    book_uuid: Optional[uuid.UUID]
     title: str
     publisher: str
     category: str
@@ -58,8 +58,8 @@ class BorrowRecord:
     """
     Domain model for a record of a book borrowed by a user.
     """
-    record_id: Union[int, None]
-    record_uuid: uuid
+    record_id: Optional[int]
+    record_uuid: Optional[uuid.UUID]
     user: User
     book: Book
     borrow_date: date
