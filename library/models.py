@@ -16,7 +16,7 @@ class User(TimeStampedModel, AbstractUser):
     Model for a library user.
     """
     user_id = models.AutoField(primary_key=True)
-    user_uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    user_uuid = models.UUIDField(editable=False, unique=True)
     email = models.EmailField(unique=True)
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
@@ -37,7 +37,7 @@ class Book(TimeStampedModel):
     Model for a book in the library.
     """
     book_id = models.AutoField(primary_key=True)
-    book_uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    book_uuid = models.UUIDField(editable=False, unique=True)
     title = models.CharField(max_length=255)
     publisher = models.CharField(max_length=255)
     category = models.CharField(max_length=255)
@@ -70,7 +70,7 @@ class BorrowRecord(TimeStampedModel):
     Model for a record of a book borrowed by a user.
     """
     record_id = models.AutoField(primary_key=True)
-    record_uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    record_uuid = models.UUIDField(editable=False, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     borrow_date = models.DateField()
