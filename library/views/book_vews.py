@@ -3,6 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from uuid import UUID
+
+from core.domain.models import Book
 from library.book_service import BookService
 
 
@@ -42,7 +44,7 @@ class AddBookView(APIView):
         book_service = BookService()
 
         try:
-            new_book = book_service.add_new_book(book_data)
+            new_book = book_service.add_new_book(Book(**book_data))
             return Response(new_book, status=status.HTTP_201_CREATED)
         except ValidationError as e:
             return Response({"errors": e.detail}, status=status.HTTP_400_BAD_REQUEST)
