@@ -3,6 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from uuid import UUID
+
+from core.domain.models import User
 from library.user_service import UserService
 
 
@@ -27,7 +29,7 @@ class EnrollUserView(APIView):
 
         user_service = UserService()
         try:
-            new_user = user_service.enroll_user(email, firstname, lastname)
+            new_user = user_service.enroll_user(User(email, firstname, lastname))
             return Response(new_user, status=status.HTTP_201_CREATED)
         except ValidationError as e:
             return Response({"errors": e.detail}, status=status.HTTP_400_BAD_REQUEST)

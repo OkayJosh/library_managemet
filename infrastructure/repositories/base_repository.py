@@ -39,8 +39,8 @@ class BaseRepository:
         """
         results = []
         for db in self.databases:
-            instance = self.model_class(**instance)
-            result = instance.save(using=db)
+            model_instance = self.model_class(**instance)
+            result = model_instance.save(using=db)
             results.append(result)
         return results
 

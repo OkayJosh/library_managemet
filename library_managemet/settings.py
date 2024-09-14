@@ -84,6 +84,7 @@ DATABASES = {
         default=config('DATABASE_URL'),
     ),
     'admin': dj_database_url.config(
+        env='DATABASE_URL_2',
         default=config('DATABASE_URL_2'),
     )
 }

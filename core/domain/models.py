@@ -2,9 +2,8 @@
 Data classes for the Base Entities
 """
 import uuid
-from dataclasses import dataclass
-from datetime import date
-from typing import Union, Optional
+from dataclasses import dataclass, field
+from datetime import date, datetime
 
 
 @dataclass
@@ -12,11 +11,12 @@ class User:
     """
     Domain model for a library user.
     """
-    user_id: Optional[int]
-    user_uuid: Optional[uuid.UUID]
     email: str
     firstname: str
     lastname: str
+    user_uuid: uuid.UUID = field(default_factory=uuid.uuid4)
+    created: datetime = field(default_factory=datetime.now)
+    modified: datetime = field(default_factory=datetime.now)
 
     def __post_init__(self):
         """
@@ -30,12 +30,13 @@ class Book:
     """
     Domain model for a book in the library.
     """
-    book_id: Optional[int]
-    book_uuid: Optional[uuid.UUID]
     title: str
     publisher: str
     category: str
     availability_status: bool = True
+    book_uuid: uuid.UUID = field(default_factory=uuid.uuid4)
+    created: datetime = field(default_factory=datetime.now)
+    modified: datetime = field(default_factory=datetime.now)
 
     def lend_out(self):
         """
@@ -58,12 +59,13 @@ class BorrowRecord:
     """
     Domain model for a record of a book borrowed by a user.
     """
-    record_id: Optional[int]
-    record_uuid: Optional[uuid.UUID]
     user: User
     book: Book
     borrow_date: date
     due_date: date
+    record_uuid: uuid.UUID = field(default_factory=uuid.uuid4)
+    created: datetime = field(default_factory=datetime.now)
+    modified: datetime = field(default_factory=datetime.now)
 
     def is_overdue(self) -> bool:
         """
