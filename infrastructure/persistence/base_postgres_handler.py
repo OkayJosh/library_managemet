@@ -24,7 +24,7 @@ class BasePostgresHandler:
         :param book:
         :return:
         """
-        result = self.database_broker.publish("book_events", {"action": "add", "book": book})
+        result = self.database_broker.publish("book_events", {"action": "add", "book": book.__dict__})
         return result
 
     def remove_book(self, book_uuid):
@@ -74,7 +74,7 @@ class BasePostgresHandler:
         :param user:
         :return:
         """
-        self.database_broker.publish("enroll_events", {"action": "add", "user": user})
+        self.database_broker.publish("enroll_events", {"action": "add", "user": user.__dict__})
         return True
 
     def list_users(self):
@@ -98,7 +98,7 @@ class BasePostgresHandler:
         :param borrow_record:
         :return:
         """
-        self.database_broker.publish("borrow_events", {"action": "add", **borrow_record})
+        self.database_broker.publish("borrow_events", {"action": "add", **borrow_record.__dict__})
         return True
 
     def get_borrow_record(self, user_uuid, book_uuid):
