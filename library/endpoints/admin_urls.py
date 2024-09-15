@@ -7,9 +7,9 @@ from library.views.book_vews import AddBookView, UnavailableBooksView, RemoveBoo
 from library.views.user_views import UserListView, UserBorrowedBooksView
 
 urlpatterns = [
-    # Add new book to the catalogue/category
+    # Add a book to the catalogue/category
     path('books/add/', AddBookView.as_view(), name='add-book'),
-    # remove book from catalogue/category
+    # remove a book from catalogue/category
     path('books/<uuid:book_uuid>/remove/', RemoveBookView.as_view(), name='remove-book'),
     # List users enrolled in the library
     path('users/', UserListView.as_view(), name='user-list'),
