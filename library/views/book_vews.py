@@ -4,8 +4,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from uuid import UUID
 
-from core.domain.models import Book
 from library.book_service import BookService
+from core.domain.models import Book as BookRecord
+from library.models import Book
 
 
 class BookListView(APIView):
@@ -44,7 +45,7 @@ class AddBookView(APIView):
         book_service = BookService()
 
         try:
-            new_book = book_service.add_new_book(Book(**book_data))
+            new_book = book_service.add_new_book(BookRecord(**book_data))
             return Response(new_book, status=status.HTTP_201_CREATED)
         except ValidationError as e:
             return Response({"errors": e.detail}, status=status.HTTP_400_BAD_REQUEST)
@@ -52,19 +53,19 @@ class AddBookView(APIView):
 
 class RemoveBookView(APIView):
     """
-    API view to add a new book.
+    API view to remove a book by UUID.
     """
-    def post(self, request, book_uuid):
-
-        book_uuid = UUID(book_uuid)
+    def delete(self, request, book_uuid):
+        book_uuid = book_uuid if isinstance(book_uuid, UUID) else UUID(book_uuid)
         book_service = BookService()
 
         try:
-            new_book = book_service.remove_book(book_uuid)
-            return Response(new_book, status=status.HTTP_201_CREATED)
+            removed_book = book_service.remove_book(book_uuid)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except ValidationError as e:
             return Response({"errors": e.detail}, status=status.HTTP_400_BAD_REQUEST)
-
+        except Book.DoesNotExist:
+            return Response({"errors": "Book not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class BorrowedBookListView(APIView):
     """
@@ -81,7 +82,7 @@ class BookAvailabilityView(APIView):
     API view to check book availability.
     """
     def get(self, request, book_uuid):
-        book_uuid = UUID(book_uuid)
+        book_uuid = book_uuid if isinstance(book_uuid, UUID) else UUID(book_uuid)
         book_service = BookService()
         available = book_service.get_book_availability(book_uuid)
         return Response({"available": available}, status=status.HTTP_200_OK)
@@ -91,7 +92,7 @@ class BookDetailView(APIView):
     API view to get a single book by its ID.
     """
     def get(self, request, book_uuid):
-        book_uuid = UUID(book_uuid)
+        book_uuid = book_uuid if isinstance(book_uuid, UUID) else UUID(book_uuid)
         book_service = BookService()
         book = book_service.get_book_by_id(book_uuid)
         return Response(book, status=status.HTTP_200_OK)
@@ -105,7 +106,7 @@ class BookFilterView(APIView):
         publisher = request.query_params.get("publisher")
         category = request.query_params.get("category")
         book_service = BookService()
-        filtered_books = book_service.filter_book(publisher, category)
+        filtered_books = book_service.filter_books(publisher, category)
         return Response(filtered_books, status=status.HTTP_200_OK)
 
 class UnavailableBooksView(APIView):
