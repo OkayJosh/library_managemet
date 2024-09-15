@@ -59,13 +59,15 @@ class BorrowRecord:
     """
     Domain model for a record of a book borrowed by a user.
     """
-    user: User
-    book: Book
-    borrow_date: date
-    due_date: date
+    # user: User
+    # book: Book
+    borrow_date: datetime
+    due_date: datetime
     record_uuid: uuid.UUID = field(default_factory=uuid.uuid4)
     created: datetime = field(default_factory=datetime.now)
     modified: datetime = field(default_factory=datetime.now)
+    book_uuid: uuid.UUID = None
+    user_uuid: uuid.UUID = None
 
     def is_overdue(self) -> bool:
         """
