@@ -1,7 +1,7 @@
 """
 Base Repository
 """
-from typing import List, Union
+from typing import List, Union, Dict, Any
 
 
 class BaseRepository:
@@ -83,4 +83,18 @@ class BaseRepository:
         for db in self.databases:
             queryset = self._get_queryset(db).filter(**filters)
             results.extend(queryset)
+        return results
+
+    def update(self, filters: Dict[str, Any], updates: Dict[str, Any]):
+        """
+        Update instances matching the filters in all specified databases.
+        :param filters: Filters for selecting instances to update.
+        :param updates: Fields and values to update.
+        :return: Dictionary of results for each database operation.
+        """
+        results = {}
+        for db in self.databases:
+            queryset = self._get_queryset(db).filter(**filters)
+            count = queryset.update(**updates)
+            results[db] = count
         return results
