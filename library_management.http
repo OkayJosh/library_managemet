@@ -1,0 +1,52 @@
+### frontend api
+GET {{host}}library/books/
+
+###
+GET {{host}}library/books/f2a14e83-a5fb-4a67-a7e1-ec414f9ff253/
+
+###
+GET {{host}}library/books/filter/?publisher=Joshua&category=cGFiction
+
+###
+GET {{host}}library/books/filter/?category=cGFiction
+
+###
+GET {{host}}library/books/borrowed/
+
+###
+GET {{host}}library/books/f2a14e83-a5fb-4a67-a7e1-ec414f9ff253/availability/
+
+###
+POST {{host}}library/users/enroll/
+Content-Type: application/json
+
+{
+  "email": "maximus@joshua.com",
+  "firstname": "maximus",
+  "lastname": "Joshua"
+}
+
+###
+GET {{host}}library/users/22c86997-f2a0-42ef-8e1e-cbb34f4372e1/borrowed/
+
+###
+POST {{host}}library/books/borrow/
+Content-Type: application/json
+
+{
+  "user_uuid": "22c86997-f2a0-42ef-8e1e-cbb34f4372e1",
+  "book_uuid": "f2a14e83-a5fb-4a67-a7e1-ec414f9ff253",
+  "days": 3
+}
+
+### admin api
+POST {{host}}library/books/add/
+Content-Type: application/json
+
+{
+  "title": "Cat is home alone test",
+  "publisher": "Johua",
+  "category": "Fiction"
+}
+###
+
