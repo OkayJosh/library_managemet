@@ -27,7 +27,7 @@ class UserRepository(BaseRepository):
         :param user_uuid: User ID.
         :return: User instance or None if not found.
         """
-        return self.get(id=user_uuid)
+        return self.get(user_uuid=user_uuid)
 
     def list_users(self):
         """

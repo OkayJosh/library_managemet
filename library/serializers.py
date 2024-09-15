@@ -16,3 +16,8 @@ class BorrowRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = BorrowRecord
         fields = '__all__'
+
+    book_title = serializers.SerializerMethodField()
+
+    def get_book_title(self, obj):
+        return obj.book.title

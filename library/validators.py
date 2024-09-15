@@ -1,6 +1,9 @@
 """
 Validator for application
 """
+from datetime import timedelta
+
+from django.utils.timezone import now
 from rest_framework import serializers
 
 class BorrowSerializer(serializers.Serializer):
@@ -56,8 +59,17 @@ class BorrowSerializer(serializers.Serializer):
         if not book:
             raise serializers.ValidationError("User not found.")
 
-        if not book.available:
+        if not book.availability_status:
             raise serializers.ValidationError(f"Book '{book.title}' is not available for borrowing.")
+
+        # Calculate borrow_date and due_date based on the input days
+        borrow_date = now()
+        due_date = borrow_date + timedelta(days=data.get('days'))
+
+        # Remove 'days' from the validated data and add 'borrow_date' and 'due_date'
+        data.pop('days')
+        data['borrow_date'] = borrow_date
+        data['due_date'] = due_date
 
         return data
 

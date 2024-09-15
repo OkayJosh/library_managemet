@@ -5,6 +5,7 @@ import uuid
 
 from rest_framework.exceptions import ValidationError
 
+from core.domain.models import User
 from library.serializers import BorrowRecordSerializer
 from library.validators import UserSerializer
 from infrastructure.persistence.base_postgres_handler import PostgresHandlerFrontend, PostgresHandlerAdmin
@@ -21,24 +22,22 @@ class UserService:
         """
         self.default_db = self.active_db[default_db]()
 
-    def enroll_user(self, email: str, firstname: str, lastname: str):
+    def enroll_user(self, user: User):
         """
         Enroll a new user in the library system.
-        :param email:
-        :param firstname:
-        :param lastname:
+        :param user:
         :return: Serialized user data.
         """
         # Validate input data
         serializer = UserSerializer(
-            data={"email": email, "firstname": firstname, "lastname": lastname}
+            data=user.__dict__
         )
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
 
         validated_data = serializer.validated_data
-        new_user = self.default_db.enroll_user(**validated_data)
-        return UserSerializer(new_user).data
+        self.default_db.enroll_user(User(**validated_data))
+        return {"message": "User Successfully Enrolled"}
 
     def list_users(self):
         """

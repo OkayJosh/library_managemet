@@ -28,7 +28,7 @@ class BorrowRepository(BaseRepository):
         :param book_uuid: Book ID.
         :return: BorrowRecord instance or None if not found.
         """
-        return self.get(user_uuid=user_uuid, book_uuid=book_uuid)
+        return self.get(user=user_uuid, record_uuid=book_uuid)
 
     def list_borrow_records(self):
         """
