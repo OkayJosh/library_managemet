@@ -2,6 +2,7 @@
 Borrow Repository
 """
 from infrastructure.repositories.base_repository import BaseRepository
+from infrastructure.repositories.book_repository import BookRepository
 from library.models import BorrowRecord
 
 
@@ -19,7 +20,11 @@ class BorrowRepository(BaseRepository):
         :param borrow_record: BorrowRecord instance to create.
         :return: List of results for each database operation.
         """
-        return self.add(borrow_record)
+        record_instance = borrow_record.__dict__
+        record = self.add(record_instance)
+        book_update = BookRepository()
+        book_update.update(filters={"book_uuid": record_instance["book_uuid"]}, updates={"availability_status": False})
+        return record
 
     def get_borrow_record(self, user_uuid, book_uuid):
         """
@@ -28,7 +33,7 @@ class BorrowRepository(BaseRepository):
         :param book_uuid: Book ID.
         :return: BorrowRecord instance or None if not found.
         """
-        return self.get(user=user_uuid, record_uuid=book_uuid)
+        return self.get(user_id=user_uuid, book_id=book_uuid)
 
     def list_borrow_records(self):
         """
@@ -36,3 +41,4 @@ class BorrowRepository(BaseRepository):
         :return: List of all borrow records from all databases.
         """
         return self.list()
+
