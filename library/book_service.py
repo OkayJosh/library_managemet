@@ -5,9 +5,9 @@ import uuid
 
 from rest_framework.exceptions import ValidationError
 
-from core.domain.models import Book
+from core.domain.models import Book, BorrowRecord
 from core.domain.services import LibraryService
-from library.serializers import BookSerializer
+from library.serializers import BookSerializer, BorrowRecordSerializer
 from library.validators import BorrowSerializer
 from infrastructure.persistence.base_postgres_handler import PostgresHandlerFrontend, PostgresHandlerAdmin
 
@@ -49,8 +49,8 @@ class BookService:
             raise ValidationError(serializer.errors)
 
         validated_data = serializer.validated_data
-        borrow_record = self.default_db.create_borrow_record(**validated_data)
-        return borrow_record  # If needed, serialize this record as well.
+        self.default_db.create_borrow_record(BorrowRecord(**validated_data))
+        return {"message": f'user {user_uuid} has borrowed book {book_uuid}'}
 
     def add_new_book(self, book: Book):
         """
@@ -67,9 +67,8 @@ class BookService:
         :param book_uuid:
         :return: Serialized removed book.
         """
-        removed_book = self.default_db.remove_book(book_uuid)
-        serializer = BookSerializer(removed_book)
-        return serializer.data
+        self.default_db.remove_book(book_uuid)
+        return {'message': 'book has been successfully removed'}
 
     def list_borrowed_books(self):
         """
@@ -77,7 +76,7 @@ class BookService:
         :return: Serialized data of borrowed books.
         """
         borrowed_books = self.default_db.list_borrow_records()
-        serializer = BookSerializer(borrowed_books, many=True)
+        serializer = BorrowRecordSerializer(borrowed_books, many=True)
         return serializer.data
 
     def get_book_availability(self, book_uuid: uuid) -> bool:
@@ -89,15 +88,16 @@ class BookService:
         book = self.default_db.get_book_by_id(book_uuid)
         return self.library_service.is_book_available(book)
 
-    def filter_book(self, publisher: str, category: str) -> bool:
+    def filter_books(self, publisher: str, category: str) -> bool:
         """
         Check if a book is available for borrowing based on publisher and category.
         :param publisher:
         :param category:
         :return bool:
         """
-        book = self.default_db.filter_book(publisher, category)
-        return self.library_service.is_book_available(book)
+        book_list = self.default_db.filter_books(publisher, category)
+        serializer = BookSerializer(book_list, many=True)
+        return serializer.data
 
     def get_book_by_id(self, book_uuid: uuid):
         """
