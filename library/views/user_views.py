@@ -40,7 +40,7 @@ class UserBorrowRecordsView(APIView):
     API view to get a user's borrowed books.
     """
     def get(self, request, user_uuid):
-        user_uuid = UUID(user_uuid)
+        user_uuid = user_uuid if isinstance(user_uuid, UUID) else UUID(user_uuid)
         user_service = UserService()
         borrow_records = user_service.get_user_borrow_records(user_uuid)
         return Response(borrow_records, status=status.HTTP_200_OK)
@@ -50,7 +50,7 @@ class UserBorrowedBooksView(APIView):
     API view to list users and the books they have borrowed.
     """
     def get(self, request, user_uuid):
-        user_uuid = UUID(user_uuid)
+        user_uuid = user_uuid if isinstance(user_uuid, UUID) else UUID(user_uuid)
         user_service = UserService()
         borrowed_books = user_service.get_user_borrow_records(user_uuid)
         return Response(borrowed_books, status=status.HTTP_200_OK)
