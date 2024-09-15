@@ -2,7 +2,6 @@
 Library Models
 """
 
-import uuid
 from datetime import date
 
 from django.contrib.auth.models import AbstractUser
@@ -15,8 +14,7 @@ class User(TimeStampedModel, AbstractUser):
     """
     Model for a library user.
     """
-    user_id = models.AutoField(primary_key=True)
-    user_uuid = models.UUIDField(editable=False, unique=True)
+    user_uuid = models.UUIDField(editable=False, primary_key=True)
     email = models.EmailField(unique=True)
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
@@ -36,8 +34,7 @@ class Book(TimeStampedModel):
     """
     Model for a book in the library.
     """
-    book_id = models.AutoField(primary_key=True)
-    book_uuid = models.UUIDField(editable=False, unique=True)
+    book_uuid = models.UUIDField(editable=False, primary_key=True)
     title = models.CharField(max_length=255)
     publisher = models.CharField(max_length=255)
     category = models.CharField(max_length=255)
@@ -69,12 +66,29 @@ class BorrowRecord(TimeStampedModel):
     """
     Model for a record of a book borrowed by a user.
     """
-    record_id = models.AutoField(primary_key=True)
-    record_uuid = models.UUIDField(editable=False, unique=True)
+    record_uuid = models.UUIDField(editable=False, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     borrow_date = models.DateField()
     due_date = models.DateField()
+    book_uuid = None
+    user_uuid = None
+
+    def __init__(self, *args, **kwargs):
+        self.user_uuid = kwargs.pop('user_uuid', None)
+        self.book_uuid = kwargs.pop('book_uuid', None)
+        super().__init__(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+
+        if self.user_uuid:
+            self.user = User.objects.get(user_uuid=self.user_uuid)
+
+        if self.book_uuid:
+            self.book = Book.objects.get(book_uuid=self.book_uuid)
+
+        # Call the original save method
+        super().save(*args, **kwargs)
 
     def is_overdue(self) -> bool:
         """

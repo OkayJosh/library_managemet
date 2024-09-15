@@ -3,6 +3,7 @@ Application tasks
 """
 import logging
 
+from core.domain.models import BorrowRecord
 from infrastructure.repositories.book_repository import BookRepository
 from infrastructure.repositories.borrow_repository import BorrowRepository
 from infrastructure.repositories.user_repository import UserRepository
@@ -75,7 +76,7 @@ class EventProcessor:
 
     def create_borrow_record(self, event, repository):
         borrow_record = {key: value for key, value in event.items() if key != "action"}
-        repository.create_borrow_record(**borrow_record)
+        repository.create_borrow_record(BorrowRecord(**borrow_record))
 
     def remove_borrow_record(self, event, repository):
         repository.remove_borrow_record(event["borrow_uuid"])
