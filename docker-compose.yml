@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     image: lb:latest
     ports:
-      - "8050:${GUNICORN_PORT}"
+      - "3030:3030"
     volumes:
       - ./staticfiles:/lb/staticfiles
       - var_run_lb:/var/run/lb
@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
     image: lb:latest
     ports:
-      - "8040:${GUNICORN_PORT}"
+      - "8500:8500"
     volumes:
       - ./staticfiles:/lb/staticfiles
       - var_run_lb:/var/run/lb

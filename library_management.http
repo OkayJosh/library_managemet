@@ -2,15 +2,18 @@
 GET {{host}}library/books/
 
 ###
-GET {{host}}library/books/f2a14e83-a5fb-4a67-a7e1-ec414f9ff253/
+GET {{host}}library/books/4d8de589-b20d-4515-aef0-5cca7572ec78/
 
 ###
 GET {{host}}library/books/filter/?publisher=Joshua&category=cGFiction
 
 ###
-GET {{host}}library/books/filter/?category=cGFiction
+GET {{host}}library/books/filter/?publisher=Joshua
 
 ###
+GET {{host}}library/books/filter/?category=cGFiction
+
+### move this to admin-section
 GET {{host}}library/books/borrowed/
 
 ###
@@ -34,8 +37,8 @@ POST {{host}}library/books/borrow/
 Content-Type: application/json
 
 {
-  "user_uuid": "22c86997-f2a0-42ef-8e1e-cbb34f4372e1",
-  "book_uuid": "f2a14e83-a5fb-4a67-a7e1-ec414f9ff253",
+  "user_uuid": "24964430-6ca4-4889-9d90-43585ba7d05f",
+  "book_uuid": "4d8de589-b20d-4515-aef0-5cca7572ec78",
   "days": 3
 }
 
@@ -44,9 +47,21 @@ POST {{host}}library/books/add/
 Content-Type: application/json
 
 {
-  "title": "Cat is home alone test",
-  "publisher": "Johua",
+  "title": "Cat Homely",
+  "publisher": "Joshua",
   "category": "Fiction"
 }
+###
+GET {{host}}library/users/
+Content-Type: application/json
+###
+GET {{host}}library/books/unavailable/
+Content-Type: application/json
+###
+GET {{host}}library/users/borrowed/
+Content-Type: application/json
+###
+DELETE {{host}}library/books/4d8de589-b20d-4515-aef0-5cca7572ec78/remove/
+Content-Type: application/json
 ###
 
