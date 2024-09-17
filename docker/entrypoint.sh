@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 
-# Make the database check script executable
-chmod +x ./reach_database.sh
-
 # Navigate to the project directory
-PROJECT_DIR="$HOME/library_managemet"
-PROJECT_DIR="$HOME/lycon/library_managemet"
+PROJECT_DIR="$WORKDIR"
 echo "Changing to project directory: ${PROJECT_DIR}..."
 cd "${PROJECT_DIR}" || {
     echo "Failed to change to project directory. Exiting." >&2
@@ -34,15 +30,17 @@ fi
 #python manage.py collectstatic --noinput || { echo "Failed to collect static files. Exiting."; exit 1; }
 #echo "Static files collected."
 
+# NOTE: i moved running migrations to the celery worker.
+# NOTE: why because this is where most of the actions occurs
 # Apply database migrations for multiple databases
-DATABASES=("${POSTGRES_DB_1}" "${POSTGRES_DB_2}")
-for DB in "${DATABASES[@]}"; do
-    echo "Running database migrations for database: ${DB}..."
-    if ! python manage.py migrate --database="${DB}"; then
-        echo "Database migrations for ${DB} failed. Exiting." >&2
-        exit 1
-    fi
-done
+#DATABASES=("${POSTGRES_DB_1}" "${POSTGRES_DB_2}")
+#for DB in "${DATABASES[@]}"; do
+#    echo "Running database migrations for database: ${DB}..."
+#    if ! python manage.py migrate --database="${DB}"; then
+#        echo "Database migrations for ${DB} failed. Exiting." >&2
+#        exit 1
+#    fi
+#done
 
 # Start Gunicorn server
 echo "Starting Gunicorn server..."
