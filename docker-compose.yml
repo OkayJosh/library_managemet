@@ -1,0 +1,88 @@
+version: '3'
+
+services:
+  frontend-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lb:latest
+    ports:
+      - "8050:${GUNICORN_PORT}"
+    volumes:
+      - ./staticfiles:/lb/staticfiles
+      - var_run_lb:/var/run/lb
+    depends_on:
+      - db-service
+      - redis
+    command: ["/lb/docker/entrypoint.sh"]
+    env_file:
+      - .env
+
+  admin-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lb:latest
+    ports:
+      - "8040:${GUNICORN_PORT}"
+    volumes:
+      - ./staticfiles:/lb/staticfiles
+      - var_run_lb:/var/run/lb
+    depends_on:
+      - db-service
+      - redis
+    command: ["/lb/docker/entrypoint.second.sh"]
+    env_file:
+      - .env.second
+
+  # Celery Worker service
+  celery_worker:
+    image: lb:latest
+    command: ["/lb/docker/celery.worker.entrypoint.sh"]
+    depends_on:
+      - redis
+      - db-service
+    volumes:
+      - var_run_lb:/var/run/lb
+    env_file:
+      - .env
+
+  # PostgreSQL database service
+  db-service:
+    build:
+      context: .
+      dockerfile: postgres.Dockerfile
+    image: lb-postgres
+    volumes:
+      - "./docker/provision/postgresql:/docker-entrypoint-initdb.d"
+    environment:
+      FRONTEND_POSTGRES_DB: ${FRONTEND_POSTGRES_DB}
+      ADMIN_POSTGRES_DB: ${ADMIN_POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${FRONTEND_POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+  # Redis service
+  redis:
+    image: redis:latest
+    command: ["redis-server", "--port", "${REDIS_PORT}"]
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+volumes:
+  postgres_data: {}
+  var_run_lb: {}
+  db:
+    driver: local
+

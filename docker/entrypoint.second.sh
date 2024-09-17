@@ -12,8 +12,8 @@ cd "${PROJECT_DIR}" || {
 echo "Starting Django application setup..."
 
 # Source the .env file and export environment variables
-echo "Loading environment variables from .env file..."
-if ! export $(grep -v '^#' .env | xargs); then
+echo "Loading environment variables from .env.second file..."
+if ! export $(grep -v '^#' .env.second | xargs); then
     echo "Failed to export environment variables from .env file. Exiting." >&2
     exit 1
 fi
@@ -24,11 +24,6 @@ if ! docker/reach_database.sh; then
     echo "Database is not reachable. Exiting." >&2
     exit 1
 fi
-
-# Collect static files
-#echo "Collecting static files..."
-#python manage.py collectstatic --noinput || { echo "Failed to collect static files. Exiting."; exit 1; }
-#echo "Static files collected."
 
 # NOTE: i moved running migrations to the celery worker.
 # NOTE: why because this is where most of the actions occurs
