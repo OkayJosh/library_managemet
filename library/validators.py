@@ -78,6 +78,7 @@ class UserSerializer(serializers.Serializer):
     """
     Serializer for user-related input.
     """
+    user_uuid = serializers.UUIDField()
     email = serializers.EmailField()
     firstname = serializers.CharField(max_length=100)
     lastname = serializers.CharField(max_length=100)
